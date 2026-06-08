@@ -1,232 +1,117 @@
- html, body {
-  margin: 0;
-  padding: 0;
-}
-/* KEY "Added Code:"-commented out code/added my own "Next Steps: Comment explaining something I should do in future" */
-* {
-  box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keystroke Dynamics Research</title>
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh; /* Use min-height for full viewport height */
-  overflow: auto;
-}
+  <!-- CodeMirror -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.12/lib/codemirror.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.12/theme/dracula.css" />
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.12/lib/codemirror.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.12/mode/python/python.js"></script>
 
-.container {
-  text-align: left;
-  padding: 20px;
-}
+  <!-- p5.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 
-.introduction, #container {
-  background: #fff;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  max-width: 800px;
-  width: 100%;
-  margin-top: 20px;
-}
+  <!-- Pyodide -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 
-h1, h2 {
-  margin-top: 0;
-}
+  <link rel="stylesheet" href="style.css" />
+  
+</head>
+<body>
+  <div class="container">
+    <h1 class="center-text" id="title">Keystroke Dynamics Research</h1>
 
-h1 {
-  font-size: 24px;
-}
+    <!-- Language selection -->
+    <div class="center-text" id="language-selection">
+      <label for="language">Select Language:</label>
+      <select id="language" onchange="setLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="ko">Korean</option>
+      </select>
+    </div>
 
-h2 {
-  font-size: 20px;
-  text-align: center;
-}
+  <!-- Introduction -->
+    <div id="introduction" class="introduction">
+      <p id="introduction-text">
+        Traditional plagiarism detection tools, which primarily rely on direct comparisons between a user’s input and existing sources, often struggle to identify more sophisticated forms of cheating, such as extensive paraphrasing or the use of external assistance, including generative AI or other individuals.
+      </p>
+      <p id="objective-text"> 
+        Thus, this study aims to address academic dishonesty in coding by analyzing typing patterns and examining the differences in typing dynamics when individuals code and code trace compared to when they refer to or copy responses from ChatGPT. These differences are characterized by variations in thinking time, typing speed, and the frequency of editing actions during the programming and code tracing process.
+      </p>
 
-p {
-  font-size: 16px;
-  color: #666;
-}
+      <p><strong id="data-collection-process">Data Collection Process:</strong></p>
 
-.question {
-  margin-bottom: 20px;
-  text-align: left; /* Ensure questions are not centered */
-  font-size: 16px;
-  line-height: 1.4;
-}
+      <p id="data-collection-description">There are four different sessions for collecting data. In each session, participants will respond to six Python coding exercises, which are designed to invoke various cognitive load levels.</p>
+<p><strong id="session-number" style="color: black">You are currently on Retyping ChatGPT Session.</strong><br><br>In this session, participants will feed each prompt to ChatGPT, then retype the generated response, focusing on accurately transcribing the provided answers.</p>
+      
+      <p><strong id="evaluation-criteria">Evaluation Criteria:</strong></p>
+      <p id="evaluation-description">Upon submission, participant responses will be evaluated based on several criteria:</p>
+      <ul id="evaluation-criteria-list">
+        <li id="grammatical-accuracy"><strong>Execution and Correctness</strong></li>
+        <li id="relevance"><strong>Structure and Alignment</strong></li>
+        <li id="length"><strong>Explanation Quality</strong></li>
+      </ul>
+      <p id="violation-note"></p>
+      <button id="participateButton" class="btn center-text">Participate</button>
+    </div>
 
-.question .input {
-  width: 100%; /* Ensure the input field takes up 100% width of its container */
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  resize: vertical;
-}
+    <!-- User Information Form -->
+    <div id="user-info-form" class="centered-form" style="display: none;">
+      <h2 class="center-text" id="user-info-title">
+        Please provide your information to proceed:
+      </h2>
 
-.word-count {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #666;
-}
+      <form id="userInfoForm" class="form-center">
+        <div class="form-group">
+          <label id="gender-label">Gender:<span class="required">*</span></label>
+          <br />
+          <input type="radio" name="gender" id="male" value="Male" required />
+          <label id="male-label" for="male">Male</label>
 
-.button-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
+          <input type="radio" name="gender" id="female" value="Female" required />
+          <label id="female-label" for="female">Female</label>
 
-.btn {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 12px 24px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin: 5px;
-  transition: background-color 0.3s ease;
-}
+          <input type="radio" name="gender" id="other" value="Other" required />
+          <label id="other-label" for="other">Other</label>
+        </div>
 
-.btn:hover {
-  background-color: #0056b3;
-}
+        <div class="form-group">
+          <label id="age-label">Age:<span class="required">*</span></label>
+          <br />
+          <input type="number" id="age" name="age" required />
+        </div>
 
-.center-text {
-  text-align: center;
-}
+        <div class="form-group">
+          <label id="handedness-label">Handedness:<span class="required">*</span></label>
+          <br />
+          <input type="radio" id="right-handed" name="handedness" value="Right-handed" />
+          <label id="right-handed-label">Right-handed</label>
 
-.alert {
-  background-color: #f44336;
-  color: white;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 4px;
-  text-align: center;
-  display: block; /* Ensure the alert is always visible */
-}
+          <input type="radio" id="left-handed" name="handedness" value="Left-handed" />
+          <label id="left-handed-label">Left-handed</label>
+        </div>
 
-.error-message {
-  color: red;
-  margin-top: 10px;
-}
+        <button type="submit" id="proceed-button" class="btn center-text">
+          Proceed to Questions
+        </button>
+      </form>
 
-/* Improved form layout */
-.form-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
+      <div id="error-message" class="error-message"></div>
+    </div>
 
-.centered-form {
-  text-align: center;
-}
+    <form id="dataForm">
+      <input type="hidden" id="keystrokes" name="keystrokes" />
+    </form>
 
-.form-group {
-  text-align: left;
-  width: 100%;
-  max-width: 300px;
-}
+    <!-- Questions container -->
+    <div id="container" style="display: none;"></div>
+  </div>
 
-input[type="radio"], input[type="number"], select {
-  margin-top: 8px;
-}
-/* Add Code :hid language-selection drop down */
-#language-selection {
-  display: none;
-}
-
-.required {
-  color: red;
-}
-
-.error-popup {
-  position: fixed;
-  top: 20%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #f44336;
-  color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  display: none;
-}
-
-.instruction-box {
-  font-size: 16px;
-  background-color: #f0f8ff; /* Light blue background */
-  border: 1px solid #c1c7cd; /* Gray border */
-  padding: 15px; /* Padding inside the box */
-  border-radius: 8px; /* Rounded corners */
-  margin-bottom: 20px; /* Space below the instruction box */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-}
-
-.instruction-box ul {
-  padding-left: 20px; /* Space for the bullet points */
-}
-
-.instruction-box li {
-  margin-bottom: 10px; /* Space between list items */
-  font-size: 16px; /* Consistent font size */
-  color: #333; /* Darker text color */
-}
-/* Base CodeMirror styling */
-.CodeMirror {
-  font-family: 'Fira Code', monospace;
-  font-size: 14px;
-  border-radius: 8px;
-  padding: 8px;
-  background-color: var(#282a36);
-  color: var(#f8f8f2);
-  box-shadow: 0 0 6px rgba(0,0,0,0.1);
-  height: 200px;        /* or 300px depending on question length */
-  width: 100%;
-  overflow: auto;
-}
-.question .CodeMirror {
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-/* Focus highlight */
-.CodeMirror-focused {
-  outline: 2px solid var(#50fa7b);
-}
-
-/* Explanation text box below code editors */
-.explanation-box {
-  width: 100%;
-  margin-top: 12px;
-  padding: 10px;
-  font-size: 15px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  resize: vertical;
-}
-
-/* Explanation heading */
-.explanation-label {
-  margin-top: 18px;
-  font-weight: 600;
-}
-
-.instruction-box,
-.explanation-label,
-.session2Questions,
-.question p {
-  font-size: 18px;
-  line-height: 1.1;
-  margin-bottom: 10px;
-}
-h3 {
-  white-space: pre-line;
-  font-size: 18px;
-}
+  <!-- External JS -->
+  <script>window.FORCED_SESSION = 3;</script>
+  <script src="script.js"></script>
+</body>
+</html>
