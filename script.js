@@ -1158,4 +1158,301 @@ function showThankYouMessage(responseBlob, keystrokeBlob, userInfoBlob) {
     <li>s2_keystrokes.json</li>
     <li>s2_user_info.json</li>
   `;
-  container.ap
+  container.appendChild(list);
+
+  // Add buttons to download the files manually
+  let buttonContainer = document.createElement('div');
+  buttonContainer.className = 'button-container';
+
+  buttonContainer.appendChild(createDownloadButton(responseBlob, 's2_responses.json', language === 'en' ? 'Download Responses' : '응답 데이터 다운로드'));
+  buttonContainer.appendChild(createDownloadButton(keystrokeBlob, 's2_keystrokes.json', language === 'en' ? 'Download Keystrokes' : '키 데이터 다운로드'));
+  buttonContainer.appendChild(createDownloadButton(userInfoBlob, 's2_user_info.json', language === 'en' ? 'Download Demographics' : '사용자 정보 다운로드'));
+
+  container.appendChild(buttonContainer);
+
+  // Add visual feedback
+  let visualFeedback = document.createElement('div');
+  visualFeedback.className = 'feedback';
+  visualFeedback.textContent = language === 'en' ? 'Your responses have been recorded successfully.' : '귀하의 응답이 성공적으로 기록되었습니다.';
+  container.appendChild(visualFeedback);
+}
+
+// Function to show alert message
+function showAlert(message) {
+  let alertDiv = document.querySelector('.alert');
+
+  if (!alertDiv) {
+    alertDiv = document.createElement('div');
+    alertDiv.className = 'alert';
+    document.querySelector('.container').appendChild(alertDiv);
+  }
+
+  alertDiv.textContent = message;
+  alertDiv.style.display = 'block';
+  alertDiv.style.opacity = '1';
+
+  // Clear previous timers
+  if (alertDiv._fadeTimeout) clearTimeout(alertDiv._fadeTimeout);
+  if (alertDiv._hideTimeout) clearTimeout(alertDiv._hideTimeout);
+
+  // Fade
+  alertDiv._fadeTimeout = setTimeout(() => {
+    alertDiv.style.opacity = '0';
+  }, 2500);
+
+  // Hide
+  alertDiv._hideTimeout = setTimeout(() => {
+    alertDiv.style.display = 'none';
+  }, 3000);
+}
+
+// Function to hide alert message
+function hideAlert() {
+  let alertDiv = document.querySelector('.alert');
+  if (alertDiv) {
+    alertDiv.style.display = 'none';
+  }
+}
+
+// Function to hide the language selection dropdown
+function hideLanguageSelection() {
+  document.getElementById('language-selection').style.display = 'none';
+}
+
+// Event listener for the "Participate" button to include hiding the language selection
+// Because script.js loads at the end of body in index.html, the element should exist; still attach safely on DOMContentLoaded
+function attachParticipateHandler() {
+  const participateBtn = document.getElementById('participateButton');
+  if (!participateBtn) return;
+  participateBtn.addEventListener('click', function() {
+    hideLanguageSelection();
+    document.getElementById('introduction').style.display = 'none';
+    document.getElementById('user-info-form').style.display = 'block';
+  });
+}
+
+// Event listener when DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+  setupWorker(); 
+  attachParticipateHandler();
+
+  const userInfoForm = document.getElementById('userInfoForm');
+  if (userInfoForm) {
+    userInfoForm.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission
+      validateUserInfoForm();
+    });
+  }
+
+  // Initialize input listeners for each input field using event delegation
+  initializeEventListeners();
+  window.addEventListener("resize", () => {
+
+    const currentScale = window.visualViewport
+      ? window.visualViewport.scale
+      : 1;
+
+    if (
+      window.innerWidth !== lastViewportWidth ||
+      window.innerHeight !== lastViewportHeight ||
+      window.devicePixelRatio !== lastDevicePixelRatio ||
+      currentScale !== lastViewportScale
+    ) {
+
+      lastViewportWidth = window.innerWidth;
+      lastViewportHeight = window.innerHeight;
+      lastDevicePixelRatio = window.devicePixelRatio;
+      lastViewportScale = currentScale;
+
+      logEnvironmentChange("environment_change");
+    }
+  });
+  if (window.visualViewport) {
+
+  window.visualViewport.addEventListener("resize", () => {
+
+    const currentScale = window.visualViewport.scale;
+
+    if (currentScale !== lastViewportScale) {
+      lastViewportWidth = window.innerWidth;
+      lastViewportHeight = window.innerHeight;
+      lastDevicePixelRatio = window.devicePixelRatio;
+      lastViewportScale = currentScale;
+
+      logEnvironmentChange("environment_change");
+    }
+  });
+}
+});
+
+// Function to validate user information form
+function validateUserInfoForm() {
+  let gender = document.querySelector('input[name="gender"]:checked');
+  let age = document.getElementById('age').value.trim();
+  let handedness = document.querySelector('input[name="handedness"]:checked');
+  let errorMessage = '';
+  
+  if (!gender) {
+    errorMessage += language === 'en' ? 'Gender is required. ' : '성별은 필수입니다. ';
+  }
+  
+  if (!age) {
+    errorMessage += language === 'en' ? 'Age is required. ' : '나이는 필수입니다. ';
+  } else if (!/^\d+$/.test(age) || parseInt(age) < 5 || parseInt(age) > 80) {
+    errorMessage += language === 'en' ? 'Please enter a valid age between 5 and 80. ' : '5세에서 80세 사이의 유효한 나이를 입력하십시오. ';
+  }
+  
+  if (!handedness) {
+    errorMessage += language === 'en' ? 'Handedness is required. ' : '손잡이는 필수입니다. ';
+  }
+
+  if (errorMessage) {
+    displayPopupError(errorMessage);
+  } else {
+    hidePopupError();
+    startSession(); // Proceed to the first session of questions
+  }
+}
+
+// Function to display popup error message
+function displayPopupError(message) {
+  let errorPopup = document.getElementById('error-popup');
+  if (!errorPopup) {
+    errorPopup = document.createElement('div');
+    errorPopup.id = 'error-popup';
+    errorPopup.className = 'error-popup';
+    document.body.appendChild(errorPopup);
+  }
+  errorPopup.textContent = message;
+  errorPopup.style.display = 'block';
+}
+
+// Function to hide popup error message
+function hidePopupError() {
+  let errorPopup = document.getElementById('error-popup');
+  if (errorPopup) {
+    errorPopup.style.display = 'none';
+  }
+}
+
+// Function to set language and translate content
+function setLanguage(lang) {
+  language = lang;
+  translateContent(lang);
+  document.getElementById('language-selection').style.display = 'none'; // Hide language selection after initial choice
+}
+
+// Function to translate content based on selected language
+function translateContent(lang) {
+  const titleEl = document.getElementById('title');
+  if (titleEl) titleEl.textContent = lang === 'en' ? 'Keystroke Dynamics Research' : '타이핑 패턴 연구';
+  
+  // Translate introduction paragraphs
+  const introText = document.getElementById('introduction-text');
+  if (introText) introText.textContent = lang === 'en' ? 
+    'Traditional plagiarism detection tools, which primarily rely on direct comparisons between a user’s input and existing sources, often struggle to identify more sophisticated forms of cheating, such as extensive paraphrasing or the use of external assistance, including generative AI or other individuals.' : 
+    '기존의 표절 탐지 도구는 주로 사용자의 입력과 기존 출처 간의 직접적인 비교에 의존하기 때문에 광범위한 의역 또는 생성적 AI나 다른 사람의 도움을 포함한 외부 지원과 같은 더 정교한 형태의 부정행위를 식별하는 데 어려움을 겪습니다.';
+
+  const objectiveText = document.getElementById('objective-text');
+  if (objectiveText) objectiveText.textContent = lang === 'en' ? 
+    'Thus, this study aims to address academic dishonesty in writing by analyzing typing patterns and examining the differences in typing dynamics when individuals write directly compared to when they refer to or copy responses from ChatGPT. These differences are characterized by variations in thinking time, typing speed, and the frequency of editing actions during the writing process.' : 
+    '따라서 이 연구는 가상의 시나리오를 통해 타이핑 패턴을 분석하여 글쓰기에서의 부정행위를 식별하는 것을 목표로 합니다. 이 연구는 작성자가 직접 작성할 때와 ChatGPT의 답변을 참고하거나 그대로 옮겨쓸 때의 타이핑 역학이 다르다는 가정에 기반합니다. 이는 생각하는 시간, 타이핑 속도, 그리고 작성 중 수정 행동의 빈도 등이 다르기 때문입니다.';
+
+  // Translate data collection process
+  const dataCollProcess = document.getElementById('data-collection-process');
+  if (dataCollProcess) dataCollProcess.textContent = lang === 'en' ? 
+    'Data Collection Process:' : 
+    '데이터 수집 과정:';
+  const dataCollDesc = document.getElementById('data-collection-description');
+  if (dataCollDesc) dataCollDesc.textContent = lang === 'en' ? 
+    'There are three different sessions for collecting data. In each session, participants will respond to six questions using 100-120 words each, which are designed to invoke various cognitive load levels.' : 
+    '데이터 수집을 위한 세 가지 다른 세션이 있습니다. 각 세션에는 다양한 인지 부하 수준을 유도하도록 설계된 여섯 가지 질문들이 있고 참가자들은 각 질문에 100-120단어로 답변해야 합니다.';
+
+  const s1desc = document.getElementById('session1-description');
+  if (s1desc) s1desc.textContent = lang === 'en' ? 
+    'In this session, participants need to generate responses to each question independently, without any external assistance.' : 
+    '독립적인 글쓰기 세션: 참가자들은 외부 도움 없이 각 질문에 독립적으로 응답을 생성해야 합니다.';
+  const s2desc = document.getElementById('session2-description');
+  if (s2desc) s2desc.textContent = lang === 'en' ? 
+    'Paraphrasing ChatGPT Session: In this session, participants will feed each question to ChatGPT, then paraphrase the generated response. Paraphrasing is the act of restating a piece of text in your own words while retaining the original meaning.' : 
+    'ChatGPT 패러프레이징 세션: 이 세션에서는 참가자들은 각 질문을 ChatGPT에 입력한 후, 생성된 답변을 패러프레이징 해야 합니다. 이때 패러프레이징이란 원래 문장의 의미를 유지하면서도 다른 어휘와 문장 구조를 사용하여 표현하는 것을 의미합니다.';
+  const s3desc = document.getElementById('session3-description');
+  if (s3desc) s3desc.textContent = lang === 'en' ? 
+    'Retyping ChatGPT Session: In this session, participants will feed each prompt to ChatGPT, then retype the generated response, focusing on accurately transcribing the provided answers.' : 
+    'ChatGPT 옮겨쓰기 세션: 이 세션에서 참가자들은 각 질문을 ChatGPT에 입력한 후, 생성된 답변을 그대로 재작성할 것입니다.';
+
+  // Translate evaluation criteria
+  const evalCrit = document.getElementById('evaluation-criteria');
+  if (evalCrit) evalCrit.textContent = lang === 'en' ? 
+    'Evaluation Criteria:' : 
+    '평가 기준:';
+  const evalDesc = document.getElementById('evaluation-description');
+  if (evalDesc) evalDesc.textContent = lang === 'en' ? 
+    'Upon submission, participant responses will be evaluated based on several criteria:' : 
+    '제출 후 참가자 응답은 여러 기준에 따라 평가됩니다:';
+  const gram = document.getElementById('grammatical-accuracy');
+  if (gram) gram.textContent = lang === 'en' ? 'Grammatical Accuracy' : '문법 정확성';
+  const rel = document.getElementById('relevance');
+  if (rel) rel.textContent = lang === 'en' ? 'Relevance' : '관련성';
+  const len = document.getElementById('length');
+  if (len) len.textContent = lang === 'en' ? 'Length' : '길이';
+
+  // Translate violation note
+  const violationNote = document.getElementById('violation-note');
+  if (violationNote) {
+    violationNote.textContent = lang === 'en' ? 
+      'Significant violations of the above could result in a reduced amount of payment for participating in this data collection.' : 
+      '위의 기준을 심각하게 위반할 경우, 데이터 수집 참여에 대한 보상이 감소될 수 있습니다.';
+  }
+
+  const participateBtn = document.getElementById('participateButton');
+  if (participateBtn) participateBtn.textContent = lang === 'en' ? 'Proceed to User Information' : '사용자 정보로 진행';
+  const userInfoTitle = document.getElementById('user-info-title');
+  if (userInfoTitle) userInfoTitle.textContent = lang === 'en' ? 'Please provide your information to proceed:' : '진행하려면 정보를 제공하십시오:';
+  const genderLabel = document.getElementById('gender-label');
+  if (genderLabel) genderLabel.innerHTML = lang === 'en' ? 'Gender:<span class="required">*</span>' : '성별:<span class="required">*</span>';
+  const maleLabel = document.getElementById('male-label');
+  if (maleLabel) maleLabel.textContent = lang === 'en' ? 'Male' : '남성';
+  const femaleLabel = document.getElementById('female-label');
+  if (femaleLabel) femaleLabel.textContent = lang === 'en' ? 'Female' : '여성';
+  const otherLabel = document.getElementById('other-label');
+  if (otherLabel) otherLabel.textContent = lang === 'en' ? 'Other' : '기타';
+  const ageLabel = document.getElementById('age-label');
+  if (ageLabel) ageLabel.innerHTML = lang === 'en' ? 'Age:<span class="required">*</span>' : '나이:<span class="required">*</span>';
+  const handednessLabel = document.getElementById('handedness-label');
+  if (handednessLabel) handednessLabel.innerHTML = lang === 'en' ? 'Handedness:<span class="required">*</span>' : '손잡이:<span class="required">*</span>';
+  const rightLabel = document.getElementById('right-handed-label');
+  if (rightLabel) rightLabel.textContent = lang === 'en' ? 'Right-handed' : '오른손잡이';
+  const leftLabel = document.getElementById('left-handed-label');
+  if (leftLabel) leftLabel.textContent = lang === 'en' ? 'Left-handed' : '왼손잡이';
+  const proceedBtn = document.getElementById('proceed-button');
+  if (proceedBtn) proceedBtn.textContent = lang === 'en' ? 'Proceed to Questions' : '질문으로 진행';
+  const errMsg = document.getElementById('error-message');
+  if (errMsg) errMsg.textContent = ''; // Clear the error message when changing the language
+}
+
+
+// Function to initialize event listeners for input fields using event delegation
+function initializeEventListeners() {
+  // Attach event listeners to the document
+  document.addEventListener('keydown', handleEvent);
+  document.addEventListener('keyup', handleEvent);
+  document.addEventListener('input', handleEvent);
+}
+
+// Event handler function for delegated events
+function handleEvent(event) {
+  // Check if the event target is an input field with the class 'input'
+  if (event.target.classList && event.target.classList.contains('input')) {
+    // Call the appropriate function based on the event type
+    if (event.type === 'keydown' || event.type === 'keyup') {
+      logKeystroke(event);
+    } else if (event.type === 'input') {
+      // Update word count if the event is 'input'
+      let wordCountDiv = event.target.nextElementSibling;
+      if (wordCountDiv && wordCountDiv.classList.contains('word-count')) {
+        updateWordCount(event.target, wordCountDiv);
+      }
+    }
+  }
+}
