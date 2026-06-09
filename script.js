@@ -5,6 +5,22 @@
 // -------------------------
 let pyWorker = null;
 let workerReady = false;
+// Global variables to store inputs, keystrokes, and user information
+const questionsMap = {};
+let inputs = [];
+let keystrokes = [];
+let currentSession = window.FORCED_SESSION || 1; //Session number for coding purposes
+sessionNumber = 4 //Session number for tracking purposes
+let userInfo = {};
+let totalQuestions = 0; // Track the total number of questions
+let language = 'en'; // Default language
+let lastViewportWidth = window.innerWidth;
+let lastViewportHeight = window.innerHeight;
+let lastDevicePixelRatio = window.devicePixelRatio;
+let lastViewportScale = window.visualViewport
+  ? window.visualViewport.scale
+  : 1;
+const questions = {};
 
 const pendingRuns = {};
 
@@ -20,7 +36,7 @@ function ensureCodeMirrorFocus(editor) {
     const meta = editor._meta;
 
     keystrokes.push({
-      s_n: currentSession + 1,
+      s_n: sessionNumber, //Forcing session 4
       r_t: meta.inputType,
       q_id: meta.questionIndex + 1,
       version: meta.version,
@@ -176,30 +192,14 @@ let sessionInstructions = {
   },
   //Added Code: Changed questions to be specific to coding
   session2: {
-    en: "Copy the question, switch tabs to ChatGPT, and directly paste the question into ChatGPT.\nCopy the generated response from ChatGPT, switch tabs, and paste it into the the ChatGPT Version input field.\nIn the Paraphrased Version input field, paraphrase the generated response by going through line by line.Keep in mind, paraphrasing is rendering the same code in different words without losing the function of the code itself.\nRepeat the above steps for each coding exercise and follow up question in this session. Ensure to have your screen view on fullscreen and do not zoom in or out. \nAnticipated duration: 30-40 minutes.",
+    en: "Copy the question, switch tabs to ChatGPT, and directly paste the question into ChatGPT.\nCopy the generated response from ChatGPT, switch tabs, and paste it into the the ChatGPT Version input field.\nIn the Paraphrased Version input field, paraphrase the generated response by going through line by line. Keep in mind, paraphrasing is rendering the same code in different words without losing the function of the code itself.\nRepeat the above steps for each coding exercise and follow up question in this session. Ensure to have your screen view on fullscreen and do not zoom in or out. \nAnticipated duration: 30-40 minutes.",
     ko: "요구된 단어수 까지 포함 각 질문을 복사하여 ChatGPT에 입력하십시오.\nChatGPT에서 생성된 응답을 복사하여 해당 질문의 첫 번째 입력 필드에 붙여넣기 하십시오.\n생성된 응답을 한 문장씩 차례로 보며 100~120단어 내외로 패러프레이즈 하십시오.\n패러프레이즈는 텍스트 자체의 의미를 잃지 않으면서 같은 텍스트를 다른 단어로 표현하는 것을 의미합니다.\n위와 같은 절차를 반복해서 각각의 질문에 답변을 하십시오.\n예상 소요 시간: 30~40분."
   },
   session3: {
-    en: "Copy the question, switch tabs to ChatGPT, and directly paste the question into ChatGPT.\nCopy the generated response from ChatGPT, switch tabs, and paste it into the the ChatGPT Version input field.\nIn the Paraphrased Version input field, paraphrase the generated response by going through line by line.Keep in mind, paraphrasing is rendering the same code in different words without losing the function of the code itself.\nRepeat the above steps for each coding exercise and follow up question in this session. Ensure to have your screen view on fullscreen and do not zoom in or out. \nAnticipated duration: 30-40 minutes.",
+    en: "Copy the question, switch tabs to ChatGPT, and directly paste the question into ChatGPT.\nCopy the generated response from ChatGPT, switch tabs, and paste it into the the ChatGPT Version input field.\nIn the Paraphrased Version input field, paraphrase the generated response by going through line by line. Keep in mind, paraphrasing is rendering the same code in different words without losing the function of the code itself.\nRepeat the above steps for each coding exercise and follow up question in this session. Ensure to have your screen view on fullscreen and do not zoom in or out. \nAnticipated duration: 30-40 minutes.",
     ko: "요구된 단어수 까지 포함 각 질문을 복사하여 ChatGPT에 입력하십시오.\nChatGPT에서 생성된 응답을 복사하여 해당 질문의 첫 번째 입력 필드에 붙여넣기 하십시오.\nChatGPT에서 생성된 응답을 보며 해당 질문의 두번째 입력 필드에 그대로 다시 타이핑하십시오.\n위와 같은 절차를 반복해서 각각의 질문에 답변을 하십시오.\n예상 소요 시간: 30~40분."
   }
 };
-
-// Global variables to store inputs, keystrokes, and user information
-const questionsMap = {};
-let inputs = [];
-let keystrokes = [];
-let currentSession = window.FORCED_SESSION || 1;
-let userInfo = {};
-let totalQuestions = 0; // Track the total number of questions
-let language = 'en'; // Default language
-let lastViewportWidth = window.innerWidth;
-let lastViewportHeight = window.innerHeight;
-let lastDevicePixelRatio = window.devicePixelRatio;
-let lastViewportScale = window.visualViewport
-  ? window.visualViewport.scale
-  : 1;
-const questions = {};
 
 // Function to log keystrokes, excluding first input in sessions 2 and 3
 // Function to log keystrokes, excluding first input in sessions 2 and 3
@@ -226,7 +226,7 @@ function logKeystroke(event, editor = null, element = null) {
 
   // ✅ 3. Push data
   keystrokes.push({
-    s_n: currentSession + 1,
+    s_n: sessionNumber,
     r_t: meta.inputType,
     q_id: meta.questionIndex + 1,
     version: meta.version,
@@ -258,7 +258,7 @@ function logTextareaCursor(e) {
   const ch = lines[lines.length - 1].length;
 
   keystrokes.push({
-    s_n: currentSession + 1,
+    s_n: sessionNumber,
     r_t: meta.inputType,
     q_id: meta.questionIndex + 1,
     version: meta.version,
@@ -277,7 +277,7 @@ function logEnvironmentChange(eventType) {
 
   keystrokes.push({
 
-    s_n: currentSession + 1,
+    s_n: sessionNumber,
 
     r_t: "environment",
     q_id: null,
@@ -466,7 +466,7 @@ function renderQuestions(container, questions, twoInputs = false) {        // �
           const cursor = cm.getCursor();
 
           keystrokes.push({
-            s_n: currentSession + 1,
+            s_n: sessionNumber,
             r_t: meta.inputType,
             q_id: meta.questionIndex + 1,
             version: meta.version,
@@ -586,7 +586,7 @@ editor2._lastMouseLog = 0;
         const cursor = cm.getCursor();
 
         keystrokes.push({
-          s_n: currentSession + 1,
+          s_n: sessionNumber,
           r_t: meta.inputType,
           q_id: meta.questionIndex + 1,
           version: meta.version,
@@ -710,7 +710,7 @@ editor.on("cursorActivity", (cm) => {
   const cursor = cm.getCursor();
 
   keystrokes.push({
-    s_n: currentSession + 1,
+    s_n: sessionNumber,
     r_t: meta.inputType,
     q_id: meta.questionIndex + 1,
     version: meta.version,
@@ -839,7 +839,7 @@ explanationBoxV1.addEventListener("mousemove", (e) => {
     const meta = explanationBoxV1._meta;
 
     keystrokes.push({
-      s_n: currentSession + 1,
+      s_n: sessionNumber,
       r_t: meta.inputType,
       q_id: meta.questionIndex + 1,
       version: meta.version,
@@ -898,7 +898,7 @@ explanationBoxV2.addEventListener("mousemove", (e) => {
     const meta = explanationBoxV2._meta;
 
     keystrokes.push({
-      s_n: currentSession + 1,
+      s_n: sessionNumber,
       r_t: meta.inputType,
       q_id: meta.questionIndex + 1,
       version: meta.version,
