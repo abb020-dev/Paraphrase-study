@@ -1033,7 +1033,7 @@ if (currentSession === 1) {
 
 if (currentSession === 2) {
   responses = session2Questions[language].map((q, i) => ({
-  session: 2,
+  session: sessionNumber,
   question: q,
   code_version_1: inputs[i * 4].element.getValue(),
   code_version_2: inputs[i * 4 + 1].element.getValue(),
