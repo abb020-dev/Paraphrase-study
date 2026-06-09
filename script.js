@@ -1129,9 +1129,9 @@ if (currentSession === 3) {
     let userInfoUrl = URL.createObjectURL(userInfoBlob);
 
     // Create link elements to trigger the downloads
-    createDownloadLink(responseBlob, 's2_responses.json');
-    createDownloadLink(keystrokeBlob, 's2_keystrokes.json');
-    createDownloadLink(userInfoBlob, 's2_user_info.json');
+    createDownloadLink(responseBlob, 's4_responses.json');
+    createDownloadLink(keystrokeBlob, 's4_keystrokes.json');
+    createDownloadLink(userInfoBlob, 's4_user_info.json');
 
     // Show thank you message with buttons to manually download files if needed
     showThankYouMessage(responseBlob, keystrokeBlob, userInfoBlob);
@@ -1154,9 +1154,9 @@ function showThankYouMessage(responseBlob, keystrokeBlob, userInfoBlob) {
 
   let list = document.createElement('ul');
   list.innerHTML = `
-    <li>s2_responses.json</li>
-    <li>s2_keystrokes.json</li>
-    <li>s2_user_info.json</li>
+    <li>s4_responses.json</li>
+    <li>s4_keystrokes.json</li>
+    <li>s4_user_info.json</li>
   `;
   container.appendChild(list);
 
@@ -1164,9 +1164,9 @@ function showThankYouMessage(responseBlob, keystrokeBlob, userInfoBlob) {
   let buttonContainer = document.createElement('div');
   buttonContainer.className = 'button-container';
 
-  buttonContainer.appendChild(createDownloadButton(responseBlob, 's2_responses.json', language === 'en' ? 'Download Responses' : '응답 데이터 다운로드'));
-  buttonContainer.appendChild(createDownloadButton(keystrokeBlob, 's2_keystrokes.json', language === 'en' ? 'Download Keystrokes' : '키 데이터 다운로드'));
-  buttonContainer.appendChild(createDownloadButton(userInfoBlob, 's2_user_info.json', language === 'en' ? 'Download Demographics' : '사용자 정보 다운로드'));
+  buttonContainer.appendChild(createDownloadButton(responseBlob, 's4_responses.json', language === 'en' ? 'Download Responses' : '응답 데이터 다운로드'));
+  buttonContainer.appendChild(createDownloadButton(keystrokeBlob, 's4_keystrokes.json', language === 'en' ? 'Download Keystrokes' : '키 데이터 다운로드'));
+  buttonContainer.appendChild(createDownloadButton(userInfoBlob, 's4_user_info.json', language === 'en' ? 'Download Demographics' : '사용자 정보 다운로드'));
 
   container.appendChild(buttonContainer);
 
