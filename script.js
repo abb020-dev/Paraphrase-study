@@ -1024,6 +1024,7 @@ if (currentSession === 1) {
   responses = session1Questions[language].map((q, i) => ({
     session: 1,
     question: q,
+    q_id: i + 1,
     code: inputs[i * 2].element.getValue(),
     explanation: inputs[i * 2 + 1].element.value,
     codeWordCount: getWordCount(inputs[i * 2].element.getValue()),
@@ -1035,6 +1036,7 @@ if (currentSession === 2) {
   responses = session2Questions[language].map((q, i) => ({
   session: sessionNumber,
   question: q,
+  q_id: i + 1,
   code_version_1: inputs[i * 4].element.getValue(),
   code_version_2: inputs[i * 4 + 1].element.getValue(),
   explanation_version_1: inputs[i * 4 + 2].element.value,
