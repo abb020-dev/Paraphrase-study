@@ -498,7 +498,10 @@ leftDiv.appendChild(output1);
 let currentRunId1 = null;
 
 runBtn1.addEventListener("click", () => {
-  const code = editor1.getValue().trim();
+  let code = editor1.getValue().trim();
+
+  // Convert all tabs to 4 spaces
+  code = code.replace(/\t/g, "    ");
 
   if (!workerReady) {
     output1.textContent = "Python still loading... Press run button again.";
@@ -639,7 +642,10 @@ rightDiv.appendChild(output2);
 let currentRunId2 = null;
 
 runBtn2.addEventListener("click", () => {
-  const code = editor2.getValue().trim();
+  let code = editor2.getValue().trim();
+
+  // Convert all tabs to 4 spaces
+  code = code.replace(/\t/g, "    ");
 
   if (!workerReady) {
     output2.textContent = "Python still loading... Press run button again.";
@@ -757,7 +763,10 @@ questionDiv.appendChild(outputSingle);
 let currentRunId = null;
 
 runBtn.addEventListener("click", () => {
-  const code = editor.getValue().trim();
+  let code = editor.getValue().trim();
+
+  // Convert all tabs to 4 spaces
+  code = code.replace(/\t/g, "    ");
 
   if (!workerReady) {
     outputSingle.textContent = "Python still loading... Press run button again.";
