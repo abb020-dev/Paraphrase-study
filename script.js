@@ -528,7 +528,7 @@ stopBtn1.addEventListener("click", () => {
 
   setupWorker(); 
 
-  output1.textContent += "\n[Execution stopped]\n";
+  output1.textContent = "\n[Execution stopped]\n";
 });
       inputs.push({ 
         question: q, 
@@ -669,7 +669,7 @@ stopBtn2.addEventListener("click", () => {
 
   setupWorker();
 
-  output2.textContent += "\n[Execution stopped]\n";
+  output2.textContent = "\n[Execution stopped]\n";
 });
 
      inputs.push({ 
@@ -787,7 +787,7 @@ stopBtn.addEventListener("click", () => {
 
   setupWorker(); 
 
-  outputSingle.textContent += "\n[Execution stopped]\n";
+  outputSingle.textContent = "\n[Execution stopped]\n";
 });
 
   inputs.push({ 
