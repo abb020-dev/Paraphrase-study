@@ -121,17 +121,77 @@ let session1Questions = {
 
 let session2Questions = {
   en: [
-  "Write code that lists 5 variables as strings. Then print out each variable in individual print statements.",
+  `Create five string variables and assign a different text value to each variable.
 
-  "Write a short Python script that uses and, or, and not operators inside if statements to check whether a number is within a range (e.g., between 10 and 50).Comment messages showing which conditions are true and false, with comments describing the logic.",
+  Print each variable using a separate print statement.
 
-  "Write a Python function count_characters(text) that computes how many vowels and consonants appear in a string.Use variables, a loop, and conditionals.",
+  Use descriptive variable names that clearly indicate what each string represents.`,
 
-  "Write a Python program that takes a list of test scores, removes any values below 50, and calculates the average of the remaining scores.Comment your code to distinguish which part filters data, which part processes data, and which part outputs the result.",
+  `Create a variable named <strong>num</strong> and assign it an integer value.
 
-  "Write a Python program that calculates the average of numbers in a list.\n\nIntentionally add one inefficient step (such as repeatedly sorting the list inside a loop).\n\nThen, rewrite it to remove that inefficiency and optimize the code.\n\nUse printed messages to justify which version performs better and why.",
+  Write three separate if statements:
+  <ul>
+    <li>One if statement must use the <strong>and</strong> operator</li>
+    <li>One if statement must use the <strong>or</strong> operator</li>
+    <li>One if statement must use the <strong>not</strong> operator</li>
+  </ul>
+  For each if statement, add a comment saying whether the condition evaluates to True or False.
 
-  "Compose a recursive Python function called count_down(n) that prints numbers from n down to 1, then prints \"Blast off!\" at the end.\n\nAfter writing the function:\nAdd code that counts how many times the function calls itself.\n\nPrint that count after the countdown finishes.\n\nUse a global or parameter-based counter to track the total calls."
+  Inside each conditional, include a print statement that describes the result of the conditional and what it means if the condition evaluates to True.`,
+
+  `Write one Python function called <strong>count_characters(text)</strong> that counts how many vowels and consonants appear in a string.
+
+  Your function must:
+  <ul>
+    <li>Ignore spaces, punctuation, and digits</li>
+    <li>Use variables to track the counts</li>
+    <li>Use a loop to process the string</li>
+    <li>Use an if statement and the <strong>in operator</strong> to identify vowels and consonants</li>
+    <li>Return the vowel count and consonant count</li>
+    <li>Call the function and print both returned counts</li>
+  </ul>
+  Use descriptive variable names.`,
+
+  `Write a Python program that processes a list of test scores.
+
+  Your program must:
+  <ul>
+    <li>Ignore any scores below 50</li>
+    <li>Calculate the average of the remaining scores</li>
+    <li>Print an appropriate message if no scores remain after filtering</li>
+    <li>Add comments that identify the <strong>filtering</strong>, <strong>processing</strong>, and <strong>output</strong> parts of the program</li>
+  </ul>
+  Use a predefined list of scores and descriptive variable names.`,
+
+  `You are given a sorted list of numbers. Write two Python functions that calculate the median.
+
+  Version A: Use a loop to help determine the median value.
+
+  Version B: Use the length of the list and indexing to calculate the median directly.
+
+  Your functions must handle:
+  <ul>
+    <li>Lists with an odd number of values</li>
+    <li>Lists with an even number of values, using the average of the two middle values</li>
+  </ul>
+  After implementing both versions:
+  <ul>
+    <li>Choose which version is better based on <strong>readability</strong> and <strong>efficiency</strong></li>
+    <li>Add a short comment above your preferred version explaining your choice in 1-2 sentences</li>
+  </ul>`,
+
+  `Write a recursive Python function called <strong>count_down(n, iterations)</strong> that prints numbers from n down to 1, then prints:
+  <ul>
+    <li><strong>Blast off!</strong></li>
+  </ul>
+  Your program must:
+  <ul>
+    <li>Track how many times the function calls itself</li>
+    <li>Print the total number of recursive calls after the countdown finishes</li>
+    <li>Use a function parameter or another clear approach to track the calls</li>
+    <li>Include a function call for <strong>count_down(5, 0)</strong></li>
+  </ul>
+  Use descriptive variable names.`
   ],
   ko: [
     "한국의 세 가지 공휴일의 이름과 각각의 의미를 간략히 설명하십시오 (150~200 단어 사이)",
@@ -392,11 +452,13 @@ function renderQuestions(container, questions, twoInputs = false) {        // �
   // ===== Question Rendering =====
   questions.forEach((q, i) => {
     questionsMap[i + 1] = q;
+
     const questionDiv = document.createElement("div");
     questionDiv.className = "question-block";
 
-    const questionLabel = document.createElement("h3");
-    questionLabel.textContent = `${i + 1}. ${q}`;
+    const questionLabel = document.createElement("div");
+    questionLabel.className = "question-text";
+    questionLabel.innerHTML = `<strong>${i + 1}.</strong> ${q}`;
     questionDiv.appendChild(questionLabel);
 
     const wordCountDiv = document.createElement("div");
