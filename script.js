@@ -121,78 +121,78 @@ let session1Questions = {
 
 let session2Questions = {
   en: [
-  `Create five string variables and assign a different text value to each variable.
+`Create five string variables and assign a different text value to each variable.
 
-  Print each variable using a separate print statement.
+Print each variable using a separate print statement.
 
-  Use descriptive variable names that clearly indicate what each string represents.`,
+Use descriptive variable names that clearly indicate what each string represents.`,
 
-  `Create a variable named <strong>num</strong> and assign it an integer value.
+`Create a variable named <strong>num</strong> and assign it an integer value.
 
-  Write three separate if statements:
-  <ul>
-    <li>One if statement must use the <strong>and</strong> operator</li>
-    <li>One if statement must use the <strong>or</strong> operator</li>
-    <li>One if statement must use the <strong>not</strong> operator</li>
-  </ul>
-  For each if statement, add a comment saying whether the condition evaluates to True or False.
+Write three separate if statements:
+<ul>
+<li>One if statement must use the <strong>and</strong> operator</li>
+<li>One if statement must use the <strong>or</strong> operator</li>
+<li>One if statement must use the <strong>not</strong> operator</li>
+</ul>
+For each if statement, add a comment saying whether the condition evaluates to True or False.
 
-  Inside each conditional, include a print statement that describes the result of the conditional and what it means if the condition evaluates to True.`,
+Inside each conditional, include a print statement that describes the result of the conditional and what it means if the condition evaluates to True.`,
 
-  `Write one Python function called <strong>count_characters(text)</strong> that counts how many vowels and consonants appear in a string.
+`Write one Python function called <strong>count_characters(text)</strong> that counts how many vowels and consonants appear in a string.
 
-  Your function must:
-  <ul>
-    <li>Ignore spaces, punctuation, and digits</li>
-    <li>Use variables to track the counts</li>
-    <li>Use a loop to process the string</li>
-    <li>Use an if statement and the <strong>in operator</strong> to identify vowels and consonants</li>
-    <li>Return the vowel count and consonant count</li>
-    <li>Call the function and print both returned counts</li>
-  </ul>
-  Use descriptive variable names.`,
+Your function must:
+<ul>
+<li>Ignore spaces, punctuation, and digits</li>
+<li>Use variables to track the counts</li>
+<li>Use a loop to process the string</li>
+<li>Use an if statement and the <strong>in operator</strong> to identify vowels and consonants</li>
+<li>Return the vowel count and consonant count</li>
+<li>Call the function and print both returned counts</li>
+</ul>
+Use descriptive variable names.`,
 
-  `Write a Python program that processes a list of test scores.
+`Write a Python program that processes a list of test scores.
 
-  Your program must:
-  <ul>
-    <li>Ignore any scores below 50</li>
-    <li>Calculate the average of the remaining scores</li>
-    <li>Print an appropriate message if no scores remain after filtering</li>
-    <li>Add comments that identify the <strong>filtering</strong>, <strong>processing</strong>, and <strong>output</strong> parts of the program</li>
-  </ul>
-  Use a predefined list of scores and descriptive variable names.`,
+Your program must:
+<ul>
+<li>Ignore any scores below 50</li>
+<li>Calculate the average of the remaining scores</li>
+<li>Print an appropriate message if no scores remain after filtering</li>
+<li>Add comments that identify the <strong>filtering</strong>, <strong>processing</strong>, and <strong>output</strong> parts of the program</li>
+</ul>
+Use a predefined list of scores and descriptive variable names.`,
 
-  `You are given a sorted list of numbers. Write two Python functions that calculate the median.
+`You are given a sorted list of numbers. Write two Python functions that calculate the median.
 
-  Version A: Use a loop to help determine the median value.
+Version A: Use a loop to help determine the median value.
 
-  Version B: Use the length of the list and indexing to calculate the median directly.
+Version B: Use the length of the list and indexing to calculate the median directly.
 
-  Your functions must handle:
-  <ul>
-    <li>Lists with an odd number of values</li>
-    <li>Lists with an even number of values, using the average of the two middle values</li>
-  </ul>
-  After implementing both versions:
-  <ul>
-    <li>Choose which version is better based on <strong>readability</strong> and <strong>efficiency</strong></li>
-    <li>Add a short comment above your preferred version explaining your choice in 1-2 sentences</li>
-  </ul>`,
+Your functions must handle:
+<ul>
+<li>Lists with an odd number of values</li>
+<li>Lists with an even number of values, using the average of the two middle values</li>
+</ul>
+After implementing both versions:
+<ul>
+<li>Choose which version is better based on <strong>readability</strong> and <strong>efficiency</strong></li>
+<li>Add a short comment above your preferred version explaining your choice in 1-2 sentences</li>
+</ul>`,
 
-  `Write a recursive Python function called <strong>count_down(n, iterations)</strong> that prints numbers from n down to 1, then prints:
-  <ul>
-    <li><strong>Blast off!</strong></li>
-  </ul>
-  Your program must:
-  <ul>
-    <li>Track how many times the function calls itself</li>
-    <li>Print the total number of recursive calls after the countdown finishes</li>
-    <li>Use a function parameter or another clear approach to track the calls</li>
-    <li>Include a function call for <strong>count_down(5, 0)</strong></li>
-  </ul>
-  Use descriptive variable names.`
-  ],
+`Write a recursive Python function called <strong>count_down(n, iterations)</strong> that prints numbers from n down to 1, then prints:
+<ul>
+<li><strong>Blast off!</strong></li>
+</ul>
+Your program must:
+<ul>
+<li>Track how many times the function calls itself</li>
+<li>Print the total number of recursive calls after the countdown finishes</li>
+<li>Use a function parameter or another clear approach to track the calls</li>
+<li>Include a function call for <strong>count_down(5, 0)</strong></li>
+</ul>
+Use descriptive variable names.`
+],
   ko: [
     "한국의 세 가지 공휴일의 이름과 각각의 의미를 간략히 설명하십시오 (150~200 단어 사이)",
     "한국 요리가 국제적으로 인기를 끌게 된 이유를 설명하십시오 (150~200 단어 사이)",
